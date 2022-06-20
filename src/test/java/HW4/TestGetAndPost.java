@@ -1,4 +1,4 @@
-package HW3;
+package HW4;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,13 +15,13 @@ public class TestGetAndPost extends AbstractClass {
 
     @Test
     public void getSearchRecipesWithQuery() {
-       given()
+       given().spec(getRequestSpecification())
                .expect()
                .body("totalResults", equalTo(223))
                .when()
-               .get(getBaseUrl()+ "/recipes/complexSearch?apiKey="+getApiKey()+"&query={query}", query)
+               .get(getBaseUrl()+ "/recipes/complexSearch?&query={query}", query)
                .then()
-               .statusCode(200);
+               .spec(responseSpecification);
 
     }
 
@@ -35,48 +35,47 @@ public class TestGetAndPost extends AbstractClass {
                 .when()
                 .get(getBaseUrl()+"/recipes/complexSearch")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
     @Test
     public void getSearchRecipesWithDiet () {
         given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .queryParam("diet", "vegetarian")
                 .expect()
                 .body("results[1].title", containsString("Garlic"))
                 .when()
                 .get(getBaseUrl()+"/recipes/complexSearch")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
     @Test
     public void getSearchRecipesWithIngredientsAndIntolerances () {
-        given()
+        given().spec(getRequestSpecification())
                 .expect()
                 .body("results[0].title",containsString("Pork"))
                 .when()
-                .get(getBaseUrl()+"/recipes/complexSearch?apiKey={apiKey}&intolerances={intolerances}&includeIngredients={includeIngredients}",getApiKey(),"aggs","pork")
+                .get(getBaseUrl()+"/recipes/complexSearch?&intolerances={intolerances}&includeIngredients={includeIngredients}","aggs","pork")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
     @Test
     public void getSearchRecipesWithTheSameValueInIngredientsAndIntolerances() {
-        given()
+        given().spec(getRequestSpecification())
                 .expect()
                 .body("offset", equalTo(0))
                 .when()
-                .get(getBaseUrl()+"/recipes/complexSearch?apiKey={apiKey}&intolerances={intolerances}&includeIngredients={includeIngredients}",getApiKey(),"aggs","aggs")
+                .get(getBaseUrl()+"/recipes/complexSearch?intolerances={intolerances}&includeIngredients={includeIngredients}","aggs","aggs")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
     @Test
     public void postClassifyCuisineForSushi () {
-        given()
-                .queryParam("apiKey", getApiKey())
+        given().spec(getRequestSpecification())
                 .queryParam("language", "en")
                 .queryParam("title", "sushi")
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -85,14 +84,14 @@ public class TestGetAndPost extends AbstractClass {
                 .when()
                 .post(getBaseUrl() + "/recipes/cuisine")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
 
     }
 
     @Test
     public void postClassifyCuisineForTitleChallah() {
         given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .queryParam("title", "challah")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .expect()
@@ -100,14 +99,14 @@ public class TestGetAndPost extends AbstractClass {
                 .when()
                 .post(getBaseUrl() + "/recipes/cuisine")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
 
     }
 
     @Test
     public void postClassifyCuisineForTitleBurgerCake() {
         given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .formParam("title", "Burger Cake")
                 .expect()
@@ -115,14 +114,13 @@ public class TestGetAndPost extends AbstractClass {
                 .when()
                 .post(getBaseUrl() + "/recipes/cuisine")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
     @Test
     public void postClassifyCuisineForTitleBurgerCakeDeLang () {
         given()
-                .queryParam("apiKey", getApiKey())
-                .queryParam("language", "en")
+                .spec(getRequestSpecification())
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .formParam("title", "Burger Cake")
                 .expect()
@@ -130,13 +128,13 @@ public class TestGetAndPost extends AbstractClass {
                 .when()
                 .post(getBaseUrl() + "/recipes/cuisine")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
     @Test
     public void postClassifyCuisineForBurgerWithIngredientList() {
         given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .formParam("title", "Burger Cake")
                 .formParam("ingredientList", "1 large beefsteak tomato\n" +
@@ -152,7 +150,7 @@ public class TestGetAndPost extends AbstractClass {
                 .when()
                 .post(getBaseUrl() + "/recipes/cuisine")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
 

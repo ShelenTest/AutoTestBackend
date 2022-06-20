@@ -1,9 +1,8 @@
-package HW3;
+package HW4;
 
 import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -16,7 +15,7 @@ public class TestChain extends AbstractClass{
     public void TestChain() {
 
         Response response = given()
-                .queryParam("apiKey", getApiKey())
+                .spec(getRequestSpecification())
                 .contentType("application/json")
                 .body("{\n"
                         + " \"username\": \"shelenrig\",\n"
@@ -59,13 +58,13 @@ public class TestChain extends AbstractClass{
                 .toString();
 
         given()
+                .spec(getRequestSpecification())
                 .queryParam("hash", hash)
-                .queryParam("apiKey", getApiKey())
                 .pathParam("username", username)
                 .pathParam("id", id)
                 .delete(getBaseUrl()+"/mealplanner/{username}/items/{id}")
                 .then()
-                .statusCode(200);
+                .spec(responseSpecification);
     }
 
 }
